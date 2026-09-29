@@ -7,7 +7,16 @@ primary_slo:
     total_event: 'event == "request_received"'
   target_percent: 99.5
   error_budget_percent: 0.5
-  note: Học viên phải giải thích hoặc điều chỉnh ngưỡng bằng baseline của mình.
+  note: |
+    Giải thích & Điều chỉnh SLO:
+    - SLI (Service Level Indicator): Tỷ lệ các request gửi phản hồi thành công với độ trễ (latency) <= 3000ms.
+    - Baseline bình thường: Latency trung bình ~160ms, P95 ~200ms. Do đó ngưỡng 3000ms đảm bảo bao bọc tail latency cho cả luồng RAG + LLM.
+    - Error Budget Calculation:
+      * Cửa sổ đánh giá: 28 ngày.
+      * Giả định tổng lưu lượng: 100,000 requests / 28 ngày.
+      * Tỷ lệ Error Budget cho phép: 0.5% (tương ứng với SLO 99.5%).
+      * Số lượng request vi phạm tối đa cho phép = 100,000 * 0.5% = 500 requests / 28 ngày.
+      * Khi số request bị trễ (>3000ms) hoặc bị lỗi chạm mốc 500 requests, Error Budget cạn kiệt (Exhausted), đội phát triển phải dừng tính năng mới để ưu tiên sửa sự cố độ trễ.
 guardrails:
   error_rate_pct_max: 2
   daily_cost_usd_max: 2.5
